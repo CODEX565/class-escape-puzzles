@@ -5,11 +5,11 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm hover:shadow-md",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -18,6 +18,10 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        "game-brain": "bg-brain-purple text-white hover:bg-brain-purple/90 shadow-sm hover:shadow-md hover:scale-105",
+        "game-escape": "bg-escape-orange text-white hover:bg-escape-orange/90 shadow-sm hover:shadow-md hover:scale-105",
+        "game-quiz": "bg-quiz-green text-white hover:bg-quiz-green/90 shadow-sm hover:shadow-md hover:scale-105",
+        "game-challenge": "bg-challenge-pink text-white hover:bg-challenge-pink/90 shadow-sm hover:shadow-md hover:scale-105",
       },
       size: {
         default: "h-10 px-4 py-2",
