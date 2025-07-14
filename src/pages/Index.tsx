@@ -19,13 +19,29 @@ const Index = () => {
       description: "Solve puzzles and riddles to escape before the bell rings. Our original brain-teasing adventure!",
       icon: DoorOpen,
       variant: "game-escape" as const,
-      featured: true
+      featured: true,
+      comingSoon: true
+    },
+    {
+      title: "WordBuzz",
+      description: "Daily word puzzles including Wordle-style challenges. Test your vocabulary skills!",
+      icon: Type,
+      variant: "game-quiz" as const,
+      gameUrl: "/games/wordle"
+    },
+    {
+      title: "Flag Guesser",
+      description: "Test your geography knowledge with flags from around the world. Multiple difficulty levels!",
+      icon: Flag,
+      variant: "game-brain" as const,
+      gameUrl: "/games/flag-guesser"
     },
     {
       title: "Brain Challenges",
       description: "Logic puzzles, riddles, and mind-bending challenges to boost your cognitive skills.",
       icon: Brain,
-      variant: "game-brain" as const
+      variant: "game-brain" as const,
+      comingSoon: true
     },
     {
       title: "GeoGuessr Style",
@@ -35,24 +51,10 @@ const Index = () => {
       comingSoon: true
     },
     {
-      title: "Wordle Games",
-      description: "Daily word puzzles including Wordle, Foodle, Nerdle and more word challenges.",
-      icon: Type,
-      variant: "game-quiz" as const,
-      comingSoon: true
-    },
-    {
       title: "Food Quiz",
       description: "Guess foods from emojis, ingredients, or pixelated images. Perfect for food lovers!",
       icon: UtensilsCrossed,
       variant: "game-escape" as const,
-      comingSoon: true
-    },
-    {
-      title: "Flag Guesser",
-      description: "Test your geography knowledge with flags from around the world.",
-      icon: Flag,
-      variant: "game-brain" as const,
       comingSoon: true
     },
     {
@@ -101,6 +103,7 @@ const Index = () => {
                   variant={game.variant}
                   comingSoon={game.comingSoon}
                   featured={game.featured}
+                  gameUrl={game.gameUrl}
                 />
               ))}
             </div>
