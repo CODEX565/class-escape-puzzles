@@ -16,7 +16,7 @@ const Index = () => {
   const games = [
     {
       title: "Escape the Class",
-      description: "Solve puzzles and riddles to escape before the bell rings. Our original brain-teasing adventure!",
+      description: "Solve puzzles and riddles to escape before the bell rings. Outsmart your surroundings, find clues, and break free from the classroom in our original brain-teasing adventure!",
       icon: DoorOpen,
       variant: "game-escape" as const,
       featured: true,
@@ -24,49 +24,49 @@ const Index = () => {
     },
     {
       title: "WordBuzz",
-      description: "Daily word puzzles including Wordle-style challenges. Test your vocabulary skills!",
+      description: "Wordle, Foodle, Nerdle, and more! Crack the word codes in daily challenges designed to stretch your vocabulary and wit.",
       icon: Type,
       variant: "game-quiz" as const,
       gameUrl: "/games/wordle"
     },
     {
       title: "Flag Guesser",
-      description: "Test your geography knowledge with flags from around the world. Multiple difficulty levels!",
+      description: "Test your geography skills by matching flags to countries. Simple, fast, and fun — learn world flags while you play.",
       icon: Flag,
       variant: "game-brain" as const,
       gameUrl: "/games/flag-guesser"
     },
     {
       title: "Brain Challenges",
-      description: "Logic puzzles, riddles, and mind-bending challenges to boost your cognitive skills.",
+      description: "Logic puzzles, riddles, and mind-bending challenges to boost your focus and cognitive skills — perfect for morning tutor time or study breaks.",
       icon: Brain,
       variant: "game-brain" as const,
       comingSoon: true
     },
     {
-      title: "GeoGuessr Style",
-      description: "Guess locations from street views and photos. Explore the world from your classroom!",
+      title: "Geo Explorer",
+      description: "Guess the location from street views and photos. Explore the world without leaving your seat in this GeoGuessr-inspired challenge.",
       icon: MapPin,
       variant: "game-challenge" as const,
       comingSoon: true
     },
     {
       title: "Food Quiz",
-      description: "Guess foods from emojis, ingredients, or pixelated images. Perfect for food lovers!",
+      description: "Guess foods using emojis, ingredients, or blurry images. Perfect for foodies and trivia lovers.",
       icon: UtensilsCrossed,
       variant: "game-escape" as const,
       comingSoon: true
     },
     {
       title: "Music Quiz",
-      description: "Identify songs from short intro clips. Challenge your music knowledge!",
+      description: "Guess songs from just the intro clip. Challenge your friends and see who has the best music memory.",
       icon: Music,
       variant: "game-challenge" as const,
       comingSoon: true
     },
     {
       title: "Logo Guesser",
-      description: "Recognize brands and logos from partial images or creative hints.",
+      description: "Identify famous brands and logos from partial or pixelated images. A fun way to test your pop culture and marketing smarts.",
       icon: Image,
       variant: "game-quiz" as const,
       comingSoon: true
@@ -114,7 +114,7 @@ const Index = () => {
         <footer className="border-t border-border py-8 px-4">
           <div className="max-w-6xl mx-auto text-center">
             <p className="text-muted-foreground">
-              BrainBuzz - Making learning fun, one game at a time. 🧠✨
+              BrainBuzz - Making learning fun, one game at a time. 🎓 Designed for students. Powered by curiosity. Ready for tutor time.
             </p>
           </div>
         </footer>

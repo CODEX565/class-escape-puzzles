@@ -85,6 +85,27 @@ export const WordleGame = () => {
     }
   }, [currentRow, currentCol, grid, gameStatus, toast]);
 
+  // Hardware keyboard support
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.toUpperCase();
+      
+      if (key === 'ENTER') {
+        event.preventDefault();
+        handleKeyPress('ENTER');
+      } else if (key === 'BACKSPACE') {
+        event.preventDefault();
+        handleKeyPress('BACKSPACE');
+      } else if (key.match(/^[A-Z]$/)) {
+        event.preventDefault();
+        handleKeyPress(key);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyPress]);
+
   const submitGuess = () => {
     const guess = grid[currentRow].map(cell => cell.letter).join('');
     const newGrid = [...grid];
@@ -209,7 +230,7 @@ export const WordleGame = () => {
       case 'absent':
         return `${baseClass} bg-muted border-muted text-muted-foreground`;
       default:
-        return `${baseClass} ${cell.letter ? 'border-primary bg-card' : 'border-border bg-background'} text-foreground`;
+        return `${baseClass} ${cell.letter ? 'border-primary bg-card' : 'border-foreground/30 bg-background'} text-foreground`;
     }
   };
 
