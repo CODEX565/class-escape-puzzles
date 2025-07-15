@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Brain, Zap, Trophy, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const HeroSection = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="relative bg-gradient-hero py-20 px-4 overflow-hidden">
       {/* Background decoration */}
@@ -55,11 +58,23 @@ export const HeroSection = () => {
         {/* CTA Buttons */}
         <div className="text-center animate-bounce-in">
           <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
-            <Button size="lg" className="px-10 py-6 text-lg font-semibold shadow-game hover:shadow-lg transition-all duration-300">
+            <Button 
+              size="lg" 
+              className="px-10 py-6 text-lg font-semibold shadow-game hover:shadow-lg transition-all duration-300"
+              onClick={() => navigate('/games/wordle')}
+            >
               Start Playing Now
             </Button>
-            <Button variant="outline" size="lg" className="px-10 py-6 text-lg font-medium border-2 hover:bg-primary/5">
-              View Leaderboard
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="px-10 py-6 text-lg font-medium border-2 hover:bg-primary/5"
+              onClick={() => {
+                const gamesSection = document.getElementById('games-section');
+                gamesSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              View All Games
             </Button>
           </div>
         </div>

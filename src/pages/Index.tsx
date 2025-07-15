@@ -74,14 +74,14 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-20">
       <Navigation />
       
       <main>
         <HeroSection />
         
         {/* Games Grid */}
-        <section className="py-16 px-4">
+        <section className="py-16 px-4" id="games-section">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-foreground mb-4">

@@ -31,6 +31,7 @@ export const WordleGame = () => {
   const [gameStatus, setGameStatus] = useState<'playing' | 'won' | 'lost'>('playing');
   const [stats, setStats] = useState<GameStats>({ played: 0, won: 0, streak: 0, maxStreak: 0 });
   const [usedLetters, setUsedLetters] = useState<Map<string, 'correct' | 'present' | 'absent'>>(new Map());
+  const [showWinAnimation, setShowWinAnimation] = useState(false);
 
   // Initialize game
   useEffect(() => {
@@ -49,6 +50,7 @@ export const WordleGame = () => {
     setCurrentCol(0);
     setGameStatus('playing');
     setUsedLetters(new Map());
+    setShowWinAnimation(false);
     
     // Initialize empty grid
     const newGrid = Array(6).fill(null).map(() =>
@@ -137,6 +139,11 @@ export const WordleGame = () => {
     // Check win condition
     if (guess === targetWord) {
       setGameStatus('won');
+      setShowWinAnimation(true);
+      
+      // Hide animation after 2 seconds
+      setTimeout(() => setShowWinAnimation(false), 2000);
+      
       const newStats = {
         ...stats,
         played: stats.played + 1,
@@ -219,12 +226,17 @@ export const WordleGame = () => {
     );
   };
 
-  const getCellClass = (cell: LetterState) => {
+  const getCellClass = (cell: LetterState, rowIndex: number, colIndex: number) => {
     const baseClass = "w-12 h-12 border-2 rounded-md flex items-center justify-center text-lg font-bold transition-all duration-300";
+    
+    // Add winning animation for the correct row
+    const winAnimationClass = showWinAnimation && rowIndex === currentRow && cell.status === 'correct' 
+      ? `animate-bounce` 
+      : '';
     
     switch (cell.status) {
       case 'correct':
-        return `${baseClass} bg-quiz-green border-quiz-green text-white`;
+        return `${baseClass} ${winAnimationClass} bg-quiz-green border-quiz-green text-white`;
       case 'present':
         return `${baseClass} bg-escape-orange border-escape-orange text-white`;
       case 'absent':
@@ -283,7 +295,7 @@ export const WordleGame = () => {
               {grid.map((row, i) => (
                 <div key={i} className="flex justify-center gap-2">
                   {row.map((cell, j) => (
-                    <div key={j} className={getCellClass(cell)}>
+                    <div key={j} className={getCellClass(cell, i, j)}>
                       {cell.letter}
                     </div>
                   ))}
