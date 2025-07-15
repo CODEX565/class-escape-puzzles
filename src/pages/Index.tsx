@@ -41,7 +41,7 @@ const Index = () => {
       description: "Logic puzzles, riddles, and mind-bending challenges to boost your focus and cognitive skills — perfect for morning tutor time or study breaks.",
       icon: Brain,
       variant: "game-brain" as const,
-      comingSoon: true
+      gameUrl: "/games/brain-challenges"
     },
     {
       title: "Geo Explorer",

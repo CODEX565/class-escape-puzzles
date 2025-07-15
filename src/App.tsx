@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import WordleGamePage from "./pages/WordleGamePage";
 import FlagGuesserGamePage from "./pages/FlagGuesserGamePage";
+import BrainChallengesGamePage from "./pages/BrainChallengesGamePage";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/games/wordle" element={<WordleGamePage />} />
           <Route path="/games/flag-guesser" element={<FlagGuesserGamePage />} />
+          <Route path="/games/brain-challenges" element={<BrainChallengesGamePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
