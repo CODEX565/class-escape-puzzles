@@ -1,13 +1,24 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Brain, User, Trophy, Home } from "lucide-react";
+import { Brain, User, Trophy, Home, BarChart3, Calendar } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthDialog } from "@/components/auth/AuthDialog";
+import { UserMenu } from "@/components/auth/UserMenu";
+import { ProfileDialog } from "@/components/profile/ProfileDialog";
+import { LeaderboardDialog } from "@/components/leaderboards/LeaderboardDialog";
 
 export const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const { user } = useAuth();
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const [leaderboardDialogOpen, setLeaderboardDialogOpen] = useState(false);
 
   return (
+    <>
     <nav className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${isHomePage ? 'w-auto' : 'w-full max-w-4xl px-4'}`}>
       <div className="bg-background/80 backdrop-blur-lg border border-border/50 rounded-2xl shadow-lg px-6 py-3">
         <div className="flex justify-between items-center">
@@ -57,13 +68,36 @@ export const Navigation = () => {
               variant="ghost" 
               size="sm"
               className="hover:bg-primary/10"
+              onClick={() => setLeaderboardDialogOpen(true)}
             >
-              <User className="w-4 h-4 mr-2" />
-              Profile
+              <Trophy className="w-4 h-4 mr-2" />
+              Leaderboard
             </Button>
+            
+            {user ? (
+              <UserMenu
+                onProfileClick={() => setProfileDialogOpen(true)}
+                onStatsClick={() => setProfileDialogOpen(true)}
+                onAchievementsClick={() => setProfileDialogOpen(true)}
+              />
+            ) : (
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="hover:bg-primary/10"
+                onClick={() => setAuthDialogOpen(true)}
+              >
+                Sign In
+              </Button>
+            )}
           </div>
         </div>
       </div>
     </nav>
+    
+    <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
+    <ProfileDialog open={profileDialogOpen} onOpenChange={setProfileDialogOpen} />
+    <LeaderboardDialog open={leaderboardDialogOpen} onOpenChange={setLeaderboardDialogOpen} />
+    </>
   );
 };
