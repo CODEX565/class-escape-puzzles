@@ -36,6 +36,12 @@ export interface UserProfile {
       bestStreak: number;
       totalCorrect: number;
     };
+    foodQuiz?: {
+      gamesPlayed: number;
+      totalScore: number;
+      correctAnswers: number;
+      bestScore: number;
+    };
   };
 }
 

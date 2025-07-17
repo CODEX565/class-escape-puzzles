@@ -55,7 +55,7 @@ const Index = () => {
       description: "Guess foods using emojis, ingredients, or blurry images. Perfect for foodies and trivia lovers.",
       icon: UtensilsCrossed,
       variant: "game-escape" as const,
-      comingSoon: true
+      gameUrl: "/games/food-quiz"
     },
     {
       title: "Music Quiz",
