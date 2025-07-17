@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Timer, Trophy, Star, RotateCcw, Flame } from 'lucide-react';
+import { Timer, Trophy, Star, RotateCcw, Flame, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAchievements } from '@/hooks/useAchievements';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { toast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface Country {
   code: string;
@@ -84,6 +85,8 @@ interface GameStats {
 export const FlagGuesserGame: React.FC = () => {
   const { user } = useAuth();
   const { checkAchievements } = useAchievements();
+  const navigate = useNavigate();
+  const nextQuestionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const [currentCountry, setCurrentCountry] = useState<Country | null>(null);
   const [options, setOptions] = useState<Country[]>([]);
@@ -126,6 +129,11 @@ export const FlagGuesserGame: React.FC = () => {
   const handleAnswer = async (selectedCountry: Country) => {
     if (selectedAnswer || showResult || gameStats.gameEnded) return;
 
+    // Clear any existing timeout
+    if (nextQuestionTimeoutRef.current) {
+      clearTimeout(nextQuestionTimeoutRef.current);
+    }
+
     setSelectedAnswer(selectedCountry.code);
     setShowResult(true);
 
@@ -146,16 +154,21 @@ export const FlagGuesserGame: React.FC = () => {
       return newStats;
     });
 
-    // Check achievements after updating stats
-    setTimeout(() => {
+    // Check achievements and generate next question after delay
+    nextQuestionTimeoutRef.current = setTimeout(() => {
       checkAchievements();
-      if (gameStats.timeLeft > 0) {
+      if (gameStats.timeLeft > 0 && !gameStats.gameEnded) {
         generateQuestion();
       }
     }, 1500);
   };
 
   const startNewGame = () => {
+    // Clear any existing timeout
+    if (nextQuestionTimeoutRef.current) {
+      clearTimeout(nextQuestionTimeoutRef.current);
+    }
+    
     setGameStats({
       score: 0,
       streak: 0,
@@ -166,6 +179,8 @@ export const FlagGuesserGame: React.FC = () => {
       gameEnded: false
     });
     setUsedCountries(new Set());
+    setSelectedAnswer(null);
+    setShowResult(false);
     generateQuestion();
   };
 
@@ -206,10 +221,17 @@ export const FlagGuesserGame: React.FC = () => {
     }
   }, [gameStats.timeLeft, gameStats.gameEnded, endGame]);
 
-  // Initialize game
+  // Initialize game once
   useEffect(() => {
     generateQuestion();
-  }, [generateQuestion]);
+    
+    // Cleanup timeout on unmount
+    return () => {
+      if (nextQuestionTimeoutRef.current) {
+        clearTimeout(nextQuestionTimeoutRef.current);
+      }
+    };
+  }, []); // Empty dependency array to run only once
 
   const accuracy = gameStats.totalQuestions > 0 
     ? Math.round((gameStats.correctAnswers / gameStats.totalQuestions) * 100) 
@@ -224,6 +246,16 @@ export const FlagGuesserGame: React.FC = () => {
   if (gameStats.gameEnded) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="mb-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
         <Card className="text-center">
           <CardHeader>
             <CardTitle className="flex items-center justify-center gap-2 text-2xl">
@@ -262,6 +294,16 @@ export const FlagGuesserGame: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="mb-4">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Button>
+      </div>
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
