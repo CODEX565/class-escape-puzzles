@@ -18,22 +18,24 @@ export interface UserProfile {
   totalScore: number;
   gamesPlayed: number;
   achievements: string[];
-  wordleStats: {
-    played: number;
-    won: number;
-    currentStreak: number;
-    maxStreak: number;
-  };
-  brainChallengeStats: {
-    totalAnswered: number;
-    correctAnswers: number;
-    bestStreak: number;
-    avgTimePerQuestion: number;
-  };
-  flagGuesserStats: {
-    played: number;
-    won: number;
-    bestScore: number;
+  stats: {
+    wordle: {
+      gamesPlayed: number;
+      gamesWon: number;
+      currentStreak: number;
+      totalScore: number;
+    };
+    brainChallenges: {
+      gamesPlayed: number;
+      correctAnswers: number;
+      totalScore: number;
+    };
+    flagGuesser: {
+      gamesPlayed: number;
+      totalScore: number;
+      bestStreak: number;
+      totalCorrect: number;
+    };
   };
 }
 
@@ -95,22 +97,24 @@ export const useAuthProvider = () => {
       totalScore: 0,
       gamesPlayed: 0,
       achievements: [],
-      wordleStats: {
-        played: 0,
-        won: 0,
-        currentStreak: 0,
-        maxStreak: 0,
-      },
-      brainChallengeStats: {
-        totalAnswered: 0,
-        correctAnswers: 0,
-        bestStreak: 0,
-        avgTimePerQuestion: 0,
-      },
-      flagGuesserStats: {
-        played: 0,
-        won: 0,
-        bestScore: 0,
+      stats: {
+        wordle: {
+          gamesPlayed: 0,
+          gamesWon: 0,
+          currentStreak: 0,
+          totalScore: 0,
+        },
+        brainChallenges: {
+          gamesPlayed: 0,
+          correctAnswers: 0,
+          totalScore: 0,
+        },
+        flagGuesser: {
+          gamesPlayed: 0,
+          totalScore: 0,
+          bestStreak: 0,
+          totalCorrect: 0,
+        },
       },
     };
 

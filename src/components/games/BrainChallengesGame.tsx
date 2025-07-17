@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, RotateCcw, Trophy, Brain, Clock, Zap, Target } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useAchievements } from "@/hooks/useAchievements";
+import { doc, updateDoc, increment } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useNavigate } from 'react-router-dom';
 
 interface Challenge {
   id: string;
@@ -109,6 +114,9 @@ const CHALLENGES: Challenge[] = [
 
 export const BrainChallengesGame = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { checkAchievements } = useAchievements();
+  const navigate = useNavigate();
   const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -172,7 +180,7 @@ export const BrainChallengesGame = () => {
     setShowExplanation(false);
   }, [usedChallenges]);
 
-  const handleAnswerSelect = (answerIndex: number) => {
+  const handleAnswerSelect = async (answerIndex: number) => {
     if (isAnswered || !gameActive) return;
     
     setSelectedAnswer(answerIndex);
@@ -206,6 +214,27 @@ export const BrainChallengesGame = () => {
     
     setStats(newStats);
     localStorage.setItem('brain-challenges-stats', JSON.stringify(newStats));
+    
+    // Save to Firestore if user is logged in
+    if (user) {
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        if (isCorrect) {
+          await updateDoc(userRef, {
+            'stats.brainChallenges.totalScore': increment(currentChallenge?.points || 0),
+            'stats.brainChallenges.gamesPlayed': increment(1),
+            'stats.brainChallenges.correctAnswers': increment(1)
+          });
+        } else {
+          await updateDoc(userRef, {
+            'stats.brainChallenges.gamesPlayed': increment(1)
+          });
+        }
+        checkAchievements();
+      } catch (error) {
+        console.error('Error saving to Firestore:', error);
+      }
+    }
     
     // Auto-advance after 3 seconds
     setTimeout(() => {
@@ -268,9 +297,9 @@ export const BrainChallengesGame = () => {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <Button variant="ghost" size="sm" onClick={() => window.history.back()}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            Back to Home
           </Button>
           <div className="text-center">
             <h1 className="text-2xl font-bold text-foreground">Brain Challenges</h1>

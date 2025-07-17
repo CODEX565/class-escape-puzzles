@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, RotateCcw, Trophy, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useAchievements } from "@/hooks/useAchievements";
+import { doc, updateDoc, increment } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useNavigate } from 'react-router-dom';
 
 interface LetterState {
   letter: string;
@@ -24,6 +29,9 @@ const WORDS = [
 
 export const WordleGame = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { checkAchievements } = useAchievements();
+  const navigate = useNavigate();
   const [targetWord, setTargetWord] = useState('');
   const [currentRow, setCurrentRow] = useState(0);
   const [currentCol, setCurrentCol] = useState(0);
@@ -108,7 +116,7 @@ export const WordleGame = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyPress]);
 
-  const submitGuess = () => {
+  const submitGuess = async () => {
     const guess = grid[currentRow].map(cell => cell.letter).join('');
     const newGrid = [...grid];
     const newUsedLetters = new Map(usedLetters);
@@ -154,6 +162,22 @@ export const WordleGame = () => {
       setStats(newStats);
       localStorage.setItem('wordle-stats', JSON.stringify(newStats));
       
+      // Save to Firestore if user is logged in
+      if (user) {
+        try {
+          const userRef = doc(db, 'users', user.uid);
+          await updateDoc(userRef, {
+            'stats.wordle.totalScore': increment(10),
+            'stats.wordle.gamesPlayed': increment(1),
+            'stats.wordle.gamesWon': increment(1),
+            'stats.wordle.currentStreak': increment(1)
+          });
+          checkAchievements();
+        } catch (error) {
+          console.error('Error saving to Firestore:', error);
+        }
+      }
+      
       toast({
         title: "🎉 Congratulations!",
         description: `You solved it in ${currentRow + 1} guesses!`,
@@ -167,6 +191,19 @@ export const WordleGame = () => {
       };
       setStats(newStats);
       localStorage.setItem('wordle-stats', JSON.stringify(newStats));
+      
+      // Save to Firestore if user is logged in
+      if (user) {
+        try {
+          const userRef = doc(db, 'users', user.uid);
+          await updateDoc(userRef, {
+            'stats.wordle.gamesPlayed': increment(1),
+            'stats.wordle.currentStreak': 0
+          });
+        } catch (error) {
+          console.error('Error saving to Firestore:', error);
+        }
+      }
       
       toast({
         title: "Game Over",
@@ -251,9 +288,9 @@ export const WordleGame = () => {
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <Button variant="ghost" size="sm" onClick={() => window.history.back()}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            Back to Home
           </Button>
           <div className="text-center">
             <h1 className="text-2xl font-bold text-foreground">WordBuzz</h1>
