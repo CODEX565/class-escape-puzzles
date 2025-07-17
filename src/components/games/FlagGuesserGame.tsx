@@ -101,11 +101,11 @@ export const FlagGuesserGame: React.FC = () => {
   });
 
   const generateQuestion = useCallback(() => {
-    const availableCountries = countries.filter(country => !usedCountries.has(country.code));
+    let availableCountries = countries.filter(country => !usedCountries.has(country.code));
     
     if (availableCountries.length < 4) {
       setUsedCountries(new Set());
-      return generateQuestion();
+      availableCountries = countries; // Reset to all countries
     }
 
     const correct = availableCountries[Math.floor(Math.random() * availableCountries.length)];
