@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
-import { Trophy, Target, Zap, Calendar, Brain, Flag, Type, Star } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
+import { Trophy, Target, Zap, Calendar, Brain, Flag, Type, Star, UtensilsCrossed, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { SettingsDialog } from '@/components/settings/SettingsDialog';
 
 interface ProfileDialogProps {
   open: boolean;
@@ -14,7 +15,8 @@ interface ProfileDialogProps {
 }
 
 export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange }) => {
-  const { userProfile, updateUserProfile } = useAuth();
+  const { userProfile } = useAuth();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   if (!userProfile) return null;
 
@@ -30,18 +32,26 @@ export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange
   const totalGamesPlayed = 
     (userProfile.stats?.wordle?.gamesPlayed || 0) +
     (userProfile.stats?.brainChallenges?.gamesPlayed || 0) +
-    (userProfile.stats?.flagGuesser?.gamesPlayed || 0);
+    (userProfile.stats?.flagGuesser?.gamesPlayed || 0) +
+    (userProfile.stats?.foodQuiz?.gamesPlayed || 0);
 
   const totalScore = 
     (userProfile.stats?.wordle?.totalScore || 0) +
     (userProfile.stats?.brainChallenges?.totalScore || 0) +
-    (userProfile.stats?.flagGuesser?.totalScore || 0);
+    (userProfile.stats?.flagGuesser?.totalScore || 0) +
+    (userProfile.stats?.foodQuiz?.totalScore || 0);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Player Profile</DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>Player Profile</DialogTitle>
+            <Button variant="outline" size="sm" onClick={() => setSettingsOpen(true)}>
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </Button>
+          </div>
         </DialogHeader>
         
         <div className="space-y-6">
@@ -185,6 +195,36 @@ export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Food Quiz Stats */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2">
+                    <UtensilsCrossed className="h-5 w-5 text-challenge-pink" />
+                    <h4 className="font-semibold">Food Quiz</h4>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Games Played:</span>
+                      <span className="font-semibold ml-2">{userProfile.stats?.foodQuiz?.gamesPlayed || 0}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Best Score:</span>
+                      <span className="font-semibold ml-2">{userProfile.stats?.foodQuiz?.bestScore || 0}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Correct Answers:</span>
+                      <span className="font-semibold ml-2">{userProfile.stats?.foodQuiz?.correctAnswers || 0}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Total Score:</span>
+                      <span className="font-semibold ml-2">{userProfile.stats?.foodQuiz?.totalScore || 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
             
             <TabsContent value="achievements" className="space-y-4">
@@ -226,25 +266,6 @@ export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange
 
           <Separator />
 
-          {/* Privacy Settings */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h5 className="font-semibold">Privacy</h5>
-                  <p className="text-sm text-muted-foreground">Hide me from leaderboards</p>
-                </div>
-                <Switch
-                  checked={userProfile.hideOnLeaderboard ?? false}
-                  onCheckedChange={(checked) => {
-                    void updateUserProfile({ hideOnLeaderboard: checked });
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Separator />
 
           <div className="flex items-center text-sm text-muted-foreground">
             <Calendar className="h-4 w-4 mr-2" />
@@ -252,6 +273,7 @@ export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange
           </div>
         </div>
       </DialogContent>
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </Dialog>
   );
 };
