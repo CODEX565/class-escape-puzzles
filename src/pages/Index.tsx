@@ -66,10 +66,10 @@ const Index = () => {
     },
     {
       title: "Logo Guesser",
-      description: "Identify famous brands and logos from partial or pixelated images. A fun way to test your pop culture and marketing smarts.",
+      description: "Identify famous brands with simple symbol clues.",
       icon: Image,
       variant: "game-quiz" as const,
-      comingSoon: true
+      gameUrl: "/games/logo-guesser"
     }
   ];
 

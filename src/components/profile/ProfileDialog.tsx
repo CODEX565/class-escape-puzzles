@@ -18,6 +18,19 @@ export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange
   const { userProfile } = useAuth();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
+  if (!userProfile) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Player Profile</DialogTitle>
+          </DialogHeader>
+          <div className="p-6 text-center text-muted-foreground">Loading profile...</div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   if (!userProfile) return null;
 
   const formatDate = (date: Date) => {
