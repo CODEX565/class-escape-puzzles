@@ -18,6 +18,7 @@ export interface UserProfile {
   totalScore: number;
   gamesPlayed: number;
   achievements: string[];
+  hideOnLeaderboard?: boolean;
   stats: {
     wordle: {
       gamesPlayed: number;
@@ -78,8 +79,9 @@ export const useAuthProvider = () => {
         if (profileDoc.exists()) {
           const data = profileDoc.data();
           setUserProfile({
-            ...data,
-            createdAt: data.createdAt.toDate()
+            ...(data as any),
+            createdAt: data.createdAt.toDate(),
+            hideOnLeaderboard: (data as any).hideOnLeaderboard ?? false,
           } as UserProfile);
         }
       } else {
@@ -103,6 +105,7 @@ export const useAuthProvider = () => {
       totalScore: 0,
       gamesPlayed: 0,
       achievements: [],
+      hideOnLeaderboard: false,
       stats: {
         wordle: {
           gamesPlayed: 0,

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { Trophy, Target, Zap, Calendar, Brain, Flag, Type, Star } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 interface ProfileDialogProps {
   open: boolean;
@@ -13,7 +14,7 @@ interface ProfileDialogProps {
 }
 
 export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange }) => {
-  const { userProfile } = useAuth();
+  const { userProfile, updateUserProfile } = useAuth();
 
   if (!userProfile) return null;
 
@@ -222,6 +223,26 @@ export const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange
               </div>
             </TabsContent>
           </Tabs>
+
+          <Separator />
+
+          {/* Privacy Settings */}
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h5 className="font-semibold">Privacy</h5>
+                  <p className="text-sm text-muted-foreground">Hide me from leaderboards</p>
+                </div>
+                <Switch
+                  checked={userProfile.hideOnLeaderboard ?? false}
+                  onCheckedChange={(checked) => {
+                    void updateUserProfile({ hideOnLeaderboard: checked });
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           <Separator />
 

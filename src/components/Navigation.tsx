@@ -73,6 +73,17 @@ export const Navigation = () => {
               <Trophy className="w-4 h-4 mr-2" />
               Leaderboard
             </Button>
+            {user && (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="hover:bg-primary/10"
+                onClick={() => setProfileDialogOpen(true)}
+              >
+                <User className="w-4 h-4 mr-2" />
+                Profile
+              </Button>
+            )}
             
             {user ? (
               <UserMenu

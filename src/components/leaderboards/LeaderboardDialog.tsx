@@ -32,17 +32,23 @@ export const LeaderboardDialog: React.FC<LeaderboardDialogProps> = ({ open, onOp
   const fetchLeaderboards = async () => {
     setLoading(true);
     try {
-      // Fetch total score leaderboard
+      // Fetch total score leaderboard (all users, excluding hidden)
       const totalScoreQuery = query(
         collection(db, 'users'),
-        orderBy('totalScore', 'desc'),
-        limit(10)
+        orderBy('totalScore', 'desc')
       );
       const totalScoreSnapshot = await getDocs(totalScoreQuery);
-      const totalScoreData = totalScoreSnapshot.docs.map((doc, index) => ({
-        username: doc.data().username,
-        score: doc.data().totalScore,
-        rank: index + 1
+      const totalScoreDataAll = totalScoreSnapshot.docs
+        .map((doc) => ({
+          username: doc.data().username as string,
+          score: (doc.data().totalScore as number) || 0,
+          hide: (doc.data().hideOnLeaderboard as boolean) === true,
+        }))
+        .filter((d) => !d.hide);
+      const totalScoreData = totalScoreDataAll.map((d, index) => ({
+        username: d.username,
+        score: d.score,
+        rank: index + 1,
       }));
       setTotalScoreLeaderboard(totalScoreData);
 
